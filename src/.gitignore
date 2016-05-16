@@ -1,0 +1,5 @@
+tests
+swift-jvm.o
+tests.o
+Makefile.in
+Makefile

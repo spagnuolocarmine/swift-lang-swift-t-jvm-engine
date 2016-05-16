@@ -1,0 +1,11 @@
+#!/bin/sh
+echo "Running aclocal..."
+aclocal
+echo "Running automake..."
+automake --add-missing 
+echo "Running autoconf..."
+autoconf -f 
+echo "Compiling java sources..."
+(cd swift-jvm; mvn package)
+echo "Turbine JVM Engine: bootstrap: OK"
+exit 0
