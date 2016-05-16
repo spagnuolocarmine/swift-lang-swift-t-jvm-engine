@@ -1,5 +1,19 @@
 #C-JVM-Scripting: evaluate JVM scripting languages in C applications. 
 
+
+Requirements
+Autotool
+Maven
+Java Virtual Machine
+
+Tested envirnment
+Unbuntu 14.04
+java version "1.8.0_45" oracle
+gcc version 4.8.4 
+autoconf (GNU Autoconf) 2.69
+automake (GNU automake) 1.14.1
+ 
+ Apache Maven 3.0.5
 ./bootstrap
 ./configure
 make
