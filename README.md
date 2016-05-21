@@ -54,10 +54,10 @@ Clojure: ok
 
 ##### Authors
 
-  - Carmine Spagnuolo* (Univeristà degli Studi di Salerno) cspagnuolo@unisa.it
-  - Jonathan Ozik (Argonne National Laboratory) jozik@anl.gov 
-  - Nicholson Collier (Argonne National Laboratory) ncollier@anl.gov 
-  - Justin M. Wozniak (Argonne National Laboratory) wozniak@mcs.anl.gov
+  - Carmine Spagnuolo* (Univeristà degli Studi di Salerno) 
+  - Jonathan Ozik (Argonne National Laboratory) 
+  - Nicholson Collier (Argonne National Laboratory) 
+  - Justin M. Wozniak (Argonne National Laboratory) 
 
 ##### License 
 
