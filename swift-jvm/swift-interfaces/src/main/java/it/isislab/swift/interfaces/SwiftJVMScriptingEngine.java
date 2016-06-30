@@ -23,19 +23,17 @@ public class SwiftJVMScriptingEngine {
 
 			switch (engine_name) {
 			case SwiftJVMScriptingEngineNames.CLOJURE:
-
 				engine = new ClojureScriptEngine();
-
 				break;
 			case SwiftJVMScriptingEngineNames.GROOVY:
-
-				engine = new ScriptEngineManager().getEngineByName("groovy");
+				engine = new ScriptEngineManager().getEngineByName(SwiftJVMScriptingEngineNames.GROOVY);
+				
 				break;
 			case SwiftJVMScriptingEngineNames.SCALA:
 				engine = new ScalaScriptEngine();
 				break;
 			case SwiftJVMScriptingEngineNames.JAVASCRIPT:
-				engine = new ScriptEngineManager().getEngineByName("javascript");
+				engine = new ScriptEngineManager().getEngineByName(SwiftJVMScriptingEngineNames.JAVASCRIPT);
 				break;
 			default:
 				break;
@@ -55,14 +53,11 @@ public class SwiftJVMScriptingEngine {
 
 			case SwiftJVMScriptingEngineNames.GROOVY:
 			case SwiftJVMScriptingEngineNames.JAVASCRIPT:
+			
 				StringWriter writer = new StringWriter();
-
 				ScriptContext context = engine.getContext();
-
 				context.setWriter(writer);
-
 				engine.eval(code);
-
 				String output = writer.toString();
 
 				return output;

@@ -30,5 +30,10 @@
       <artifactId>swift-scala</artifactId>
       <version>0.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>it.isislab.swiftlang</groupId>
+      <artifactId>swift-groovy</artifactId>
+      <version>0.0.1</version>
+    </dependency>
   </dependencies>
 </project>
