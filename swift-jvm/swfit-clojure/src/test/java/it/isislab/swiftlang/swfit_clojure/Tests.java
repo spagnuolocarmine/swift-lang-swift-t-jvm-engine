@@ -38,10 +38,18 @@ extends TestCase
 	{
 		try {
 
-
 			ScriptEngine scriptEngine = new ClojureScriptEngine();
-
-			Object result=scriptEngine.eval("(def hello (fn []\"Hello world\"))",scriptEngine.getContext());
+			String script_hello=""
+				+"	(ns clojure.examples.hello                          \n"
+				+"			   (:gen-class))                            \n"
+                +"                                                      \n"
+				+"			(defn hello-world [username]                \n"
+				+"			   (str (format \"Hello, %s\" username))) \n"
+                +"                                                      \n"
+				+"			(hello-world \"red\")                       \n"
+				+"";
+			Object result=scriptEngine.eval(script_hello,
+					scriptEngine.getContext());
 
 
 			System.out.println("Script output: " + result);

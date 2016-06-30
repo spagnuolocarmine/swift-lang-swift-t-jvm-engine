@@ -7,6 +7,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import it.isislab.swift.scala.ScalaScriptEngine;
 import it.isislab.swiftlang.swfit_clojure.ClojureScriptEngine;
 
 public class SwiftJVMScriptingEngine {
@@ -16,6 +17,7 @@ public class SwiftJVMScriptingEngine {
 
 	public static void setEngine(String engine_name_given)
 	{
+	
 		engine_name=engine_name_given;
 		try {
 
@@ -30,7 +32,7 @@ public class SwiftJVMScriptingEngine {
 				engine = new ScriptEngineManager().getEngineByName("groovy");
 				break;
 			case SwiftJVMScriptingEngineNames.SCALA:
-
+				engine = new ScalaScriptEngine();
 				break;
 			case SwiftJVMScriptingEngineNames.JAVASCRIPT:
 				engine = new ScriptEngineManager().getEngineByName("javascript");
@@ -65,7 +67,7 @@ public class SwiftJVMScriptingEngine {
 
 				return output;
 			case SwiftJVMScriptingEngineNames.SCALA:
-
+				engine.eval(code);
 				break;
 
 			default:
