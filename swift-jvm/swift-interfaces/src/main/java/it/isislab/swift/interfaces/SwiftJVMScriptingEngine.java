@@ -45,11 +45,12 @@ public class SwiftJVMScriptingEngine {
 	}
 	public static String eval(String code)
 	{
+		Object output=null;
 		try {
 			switch (engine_name) {
 			case SwiftJVMScriptingEngineNames.CLOJURE:
-
-				return (engine.eval(code,engine.getContext())).toString();
+			    output=(engine.eval(code,engine.getContext())).toString();
+				return output!=null?output.toString():"";
 
 			case SwiftJVMScriptingEngineNames.GROOVY:
 			case SwiftJVMScriptingEngineNames.JAVASCRIPT:
@@ -58,12 +59,12 @@ public class SwiftJVMScriptingEngine {
 				ScriptContext context = engine.getContext();
 				context.setWriter(writer);
 				engine.eval(code);
-				String output = writer.toString();
+				output = writer.toString();
 
-				return output;
+				return output!=null?(String)output:"";
 			case SwiftJVMScriptingEngineNames.SCALA:
-				engine.eval(code);
-				break;
+				output=engine.eval(code);
+				return output!=null?output.toString():"";
 
 			default:
 				return null;
@@ -73,7 +74,7 @@ public class SwiftJVMScriptingEngine {
 			e.printStackTrace();
 			return null;
 		}
-		return null;
+		
 
 	}
 
