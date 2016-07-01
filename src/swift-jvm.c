@@ -160,42 +160,39 @@ int init_jvm() {
 void destroy_jvm()
 {
    (*jvm)->DestroyJavaVM(jvm);
+   env=NULL;
    PDEBUGN("JVM destroyed.");
 }
 /* Evaluate Groovy Code and returns a char array of the stdio*/
 char * groovy(char *code)
 {
-  init_jvm();
+  if(jvm == NULL) init_jvm();
   call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","groovy");
   char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
-  destroy_jvm();
   return tor;
 }
 /* Evaluate Clojure Code and returns a char array of the stdio*/
 char * clojure(char *code)
 {
-  init_jvm();
+  if(jvm == NULL) init_jvm();
   call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","clojure");
   char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
-  destroy_jvm();
   return tor;
 }
 /* Evaluate Scala Code and returns a char array of the stdio*/
 char * scala(char *code)
 {
-  init_jvm();
+  if(jvm == NULL) init_jvm();
   call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","scala");
   char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
-  destroy_jvm();
   return tor;
 }
 /* Evaluate JavaScricpt Code and returns a char array of the stdio*/
 char * javascript(char *code)
 {
-  init_jvm();
+  if(jvm == NULL) init_jvm();
   call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","javascript");
   char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
-  destroy_jvm();
   return tor;
 }
 /*int main(void)
