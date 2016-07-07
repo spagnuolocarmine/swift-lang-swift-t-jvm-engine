@@ -94,13 +94,14 @@ void call_java_static_method(char *java_class_name,char *method_name,char *arg)
 
    }else PDEBUGN("No method found in class");
 }
-char * call_java_static_char_method(char *java_class_name,char *method_name,char *arg)
+char * call_java_static_char_method(char *java_class_name,char *method_name,char *sengine,char *scode)
 {
   jstring tor = NULL;
   const char *strtor;
   jmethodID smfnMethod = NULL;
   jclass clsJava=NULL;
-  jstring StringArg=NULL;
+  jstring engine=NULL;
+  jstring code=NULL;
   clsJava = (*env)->FindClass(env,java_class_name);
   PDEBUG("Insdie call method.."); PDEBUGN(method_name);
 
@@ -109,13 +110,14 @@ char * call_java_static_char_method(char *java_class_name,char *method_name,char
   else
         PDEBUGN("\n Unable to find the requested class\n");
 
-   smfnMethod = (*env)->GetStaticMethodID(env, clsJava, method_name, "(Ljava/lang/String;)Ljava/lang/String;\0");
+   smfnMethod = (*env)->GetStaticMethodID(env, clsJava, method_name,"(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;\0");
 
-   StringArg = (*env)->NewStringUTF(env, arg);
+   engine = (*env)->NewStringUTF(env, sengine);
+   code = (*env)->NewStringUTF(env, scode);
    if(smfnMethod != NULL)
    {
       PDEBUG("Calling the Static Function method -->");PDEBUGN(method_name);
-       tor=(jstring)((*env)->CallStaticObjectMethod(env, clsJava, smfnMethod, StringArg));
+       tor=(jstring)((*env)->CallStaticObjectMethod(env, clsJava, smfnMethod,engine,code));
 
        if ((*env)->ExceptionOccurred(env)) {
           (*env)->ExceptionDescribe(env);
@@ -167,32 +169,32 @@ void destroy_jvm()
 char * groovy(char *code)
 {
   if(jvm == NULL) init_jvm();
-  call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","groovy");
-  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
+  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","groovy");
+  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","groovy",code);
   return tor;
 }
 /* Evaluate Clojure Code and returns a char array of the stdio*/
 char * clojure(char *code)
 {
   if(jvm == NULL) init_jvm();
-  call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","clojure");
-  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
+  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","clojure");
+  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","clojure",code);
   return tor;
 }
 /* Evaluate Scala Code and returns a char array of the stdio*/
 char * scala(char *code)
 {
   if(jvm == NULL) init_jvm();
-  call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","scala");
-  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
+  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","scala");
+  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","scala",code);
   return tor;
 }
 /* Evaluate JavaScricpt Code and returns a char array of the stdio*/
 char * javascript(char *code)
 {
   if(jvm == NULL) init_jvm();
-  call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","javascript");
-  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval",code);
+  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","javascript");
+  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","javascript",code);
   return tor;
 }
 /*int main(void)
