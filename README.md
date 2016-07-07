@@ -22,7 +22,7 @@ Version Alpha 1.0
 ./bootstrap
 ./configure
 make
-export SWIFT_JVM_USER_LIB=. (change this with additional jar folder libraries)
+export SWIFT_JVM_USER_LIB=swift-jvm/swift-jvm-build/target/swift-jvm-build-0.0.1-bin/swift-jvm/classes/ (change this with additional jar folder libraries)
 export LD_LIBRARY_PATH=/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server (change this with JVM home)
 ./src/test
 ```
