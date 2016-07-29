@@ -8,16 +8,19 @@ AC_CONFIG_SRCDIR([src/tests.c])
 AC_PROG_CC
 AC_MSG_RESULT([Swift/T JVM Engine version: 1.0])
 
-AC_CHECK_HEADERS([limits.h stdlib.h string.h unistd.h jni.h dirent.h stdio.h sys/stat.h])
-
-#JVM HOME
-AC_SUBST(JVMHOME,"/usr/lib/jvm/java-8-oracle")
-
+JVMHOME="/usr/lib/jvm/java-8-oracle"
 AC_ARG_WITH([jvm-home],
             [AS_HELP_STRING([--with-jvm-home],
-               [Set up the jvm home directory (default: /usr/lib/jvm/java-8-oracle)])],
-            [AC_SUBST(JVMHOME,$withval)],
+               [Set up the JVM home directory
+                (default: /usr/lib/jvm/java-8-oracle)])],
+            [JVMHOME=$withval]
             )
+AC_MSG_RESULT([Using JVM home: $JVMHOME])
+AC_SUBST(JVMHOME,$JVMHOME)
+
+CFLAGS="$CFLAGS -I$JVMHOME/include"
+
+AC_CHECK_HEADERS([limits.h stdlib.h string.h unistd.h jni.h dirent.h stdio.h sys/stat.h])
 
 #JVM SWIFT-T LIBs
 AC_SUBST(JVMLIB,$(pwd)"/swift-jvm/swift-jvm-build/target/swift-jvm-build-0.0.1-bin/swift-jvm/classes")
