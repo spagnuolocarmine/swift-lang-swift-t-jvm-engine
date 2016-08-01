@@ -1,4 +1,6 @@
 #!/bin/sh
+echo "Running libtoolize..."
+libtoolize
 echo "Running aclocal..."
 aclocal
 echo "Running automake..."

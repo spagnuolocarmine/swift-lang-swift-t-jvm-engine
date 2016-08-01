@@ -2,10 +2,17 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
+
 AC_INIT([swift-jvm-engine], [1.0], [spagnuolocarmine@gmail.com])
+
 AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIRS([m4])
+LT_INIT
+
+AC_SUBST([LIBTOOL_DEPS])
 AC_CONFIG_SRCDIR([src/tests.c])
 AC_PROG_CC
+
 AC_MSG_RESULT([Swift/T JVM Engine version: 1.0])
 
 JVMHOME="/usr/lib/jvm/java-8-oracle"
@@ -52,5 +59,5 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([realpath])
 
 AC_CONFIG_FILES([Makefile
-	src/Makefile])
+                src/Makefile])
 AC_OUTPUT
