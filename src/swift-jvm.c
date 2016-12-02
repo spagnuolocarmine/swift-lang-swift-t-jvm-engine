@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <jni.h>
 #include <string.h>
@@ -10,10 +11,9 @@
 
 
 /* -- Macro Definitions */
-
 #ifdef DEBUG
-#define PDEBUG(x)    printf("%s",x)
-#define PDEBUGN(x)    printf("%s\n",x)
+#define PDEBUG(x)    pdebug("%s",  x)
+#define PDEBUGN(x)   pdebug("%s\n",x)
 #else
 #define PDEBUG(x)
 #define PDEBUGN(x)
@@ -22,24 +22,29 @@
 JNIEnv * env;
 JavaVM * jvm; 
 
+static inline void pdebug(const char* fmt, const char* s)
+{
+  printf(fmt, s);
+  fflush(stdout);
+}
+
 char * createClassPathString(char *jars_dir)
 {
     if(strlen(jars_dir)==0) return NULL;
     struct dirent *pDirent;
     DIR *pDir;
     struct stat dbuf;
-    if (lstat(jars_dir, &dbuf) == -1) return NULL;
-    if(!S_ISDIR(dbuf.st_mode)) return NULL;
-
+    if (lstat(jars_dir, &dbuf) == -1) goto error;
+    if(!S_ISDIR(dbuf.st_mode)) goto error;
     pDir = opendir (jars_dir);
-
-    if (pDir == NULL) return NULL;
+    if (pDir == NULL) goto error;
 
     int num_jars = 0;
     while ((pDirent = readdir(pDir)) != NULL) {
         if(strlen(pDirent->d_name) > 4 && !strcmp(pDirent->d_name + strlen(pDirent->d_name) - 4, ".jar"))
         num_jars++;
     }
+
     char *class_path = (char *) malloc((sizeof(char)*(PATH_MAX + 1)*num_jars) + (sizeof(char)*18));
 
     closedir (pDir);
@@ -64,9 +69,15 @@ char * createClassPathString(char *jars_dir)
 
       }
     }
+
     sprintf (class_path,"%s%s",class_path,"\0");
     closedir (pDir);
     return class_path;
+
+  error:
+    printf("Given bad class path directory: %s\n", jars_dir);
+    fflush(stdout);
+    return NULL;
 }
 void call_java_static_method(char *java_class_name,char *method_name,char *arg)
 {
@@ -74,10 +85,10 @@ void call_java_static_method(char *java_class_name,char *method_name,char *arg)
   jclass clsJava=NULL;
   jstring StringArg=NULL;
   clsJava = (*env)->FindClass(env,java_class_name);
-  PDEBUG("Insdie call method.."); PDEBUGN(method_name);
+  PDEBUG("Inside call method.."); PDEBUGN(method_name);
 
-  if(clsJava != NULL) PDEBUGN("Able to find the requested class");  
-  else PDEBUGN("\n Unable to find the requested class\n");      
+  if(clsJava != NULL) PDEBUGN("Able to find the requested class");
+  else PDEBUGN("\n Unable to find the requested class\n");
 
   smfnMethod = (*env)->GetStaticMethodID(env, clsJava, method_name, "(Ljava/lang/String;)V\0");
 
@@ -94,6 +105,7 @@ void call_java_static_method(char *java_class_name,char *method_name,char *arg)
 
    }else PDEBUGN("No method found in class");
 }
+
 char * call_java_static_char_method(char *java_class_name,char *method_name,char *sengine,char *scode)
 {
   jstring tor = NULL;
@@ -103,14 +115,25 @@ char * call_java_static_char_method(char *java_class_name,char *method_name,char
   jstring engine=NULL;
   jstring code=NULL;
   clsJava = (*env)->FindClass(env,java_class_name);
-  PDEBUG("Insdie call method.."); PDEBUGN(method_name);
+  PDEBUG("Attempting to call method: "); PDEBUGN(method_name);
 
-  if(clsJava != NULL) 
-	PDEBUGN("Able to find the requested class");
+  if(clsJava != NULL)
+  {
+	PDEBUG("Able to find the requested class ");
+  }
   else
-        PDEBUGN("\n Unable to find the requested class\n");
+        PDEBUG("\n Unable to find the requested class \n");
+  PDEBUGN(java_class_name);
 
-   smfnMethod = (*env)->GetStaticMethodID(env, clsJava, method_name,"(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;\0");
+  smfnMethod = (*env)->GetStaticMethodID
+    (env, clsJava, method_name,
+     "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;\0");
+
+   if(smfnMethod == NULL)
+   {
+     printf("Could not find method: `%s'\n", method_name);
+     return NULL;
+   }
 
    engine = (*env)->NewStringUTF(env, sengine);
    code = (*env)->NewStringUTF(env, scode);
@@ -126,20 +149,39 @@ char * call_java_static_char_method(char *java_class_name,char *method_name,char
    }else PDEBUGN("No method found in class");
    
    strtor= (char*)((*env)->GetStringUTFChars(env, tor, NULL));
+   // Caller must free this string:
    char *toStringReturn= (char*)malloc(sizeof(char)*strlen(strtor));
    sprintf(toStringReturn,"%s",strtor);
+   printf("groovy result: %s\n", toStringReturn);
    (*env)->ReleaseStringUTFChars(env,tor, strtor); 
    return toStringReturn;
 }
-int init_jvm() {
+
+#define SWIFT_JVM_ERROR -10042 // Presumably unused JNI error code
+
+/**
+ @return JNI_OK on success; returns a suitable JNI error code (a negative number) on failure. (as JNI_CreateJavaVM)
+ */
+static int init_jvm() {
 
   JavaVMInitArgs vm_args;
   JavaVMOption options;
 
+  PDEBUGN("init_jvm...");
+
   char* userlib = getenv("SWIFT_JVM_USER_LIB");
+  if (userlib == NULL || strlen(userlib) == 0)
+  {
+    printf("SWIFT_JVM_USER_LIB is not set!\n");
+    return SWIFT_JVM_ERROR;
+  }
   char * generated_class_path=createClassPathString(JVMLIB);//LIB);
+  // printf("GCP: %s\n", generated_class_path);
+  if (generated_class_path == NULL) return SWIFT_JVM_ERROR;
   char * generated_class_path_user=createClassPathString(userlib);
-  char cp[strlen(generated_class_path)+strlen(generated_class_path_user)];
+  // printf("GCPU: %s\n", generated_class_path_user);
+  if (generated_class_path_user == NULL) return SWIFT_JVM_ERROR;
+  char cp[strlen(generated_class_path)+strlen(generated_class_path_user)+128];
   
   sprintf(cp,"-Djava.class.path=%s:%s",generated_class_path,generated_class_path_user);  
   
@@ -168,9 +210,20 @@ void destroy_jvm()
 /* Evaluate Groovy Code and returns a char array of the stdio*/
 char * groovy(char *code)
 {
-  if(jvm == NULL) init_jvm();
-  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","groovy");
-  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","groovy",code);
+  // printf("swift-t-jvm: %s\n", code);
+
+  if (jvm == NULL)
+  {
+    int rc = init_jvm();
+    if (rc < 0)
+    {
+      printf("JVM FAILED\n");
+      return NULL;
+    }
+    printf("JVM OK\n");
+  }
+  call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","groovy");
+  char* tor = call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","groovy",code);
   return tor;
 }
 /* Evaluate Clojure Code and returns a char array of the stdio*/

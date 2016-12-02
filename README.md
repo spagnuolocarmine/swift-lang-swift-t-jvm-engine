@@ -30,7 +30,7 @@ export LD_LIBRARY_PATH=/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server (change t
 
 - --with-jvm-home, jvm home directory (default:/usr/lib/jvm/java-8-oracle)
 - --with-swift-jvm-engine-lib, swift jvm engine lib (default: classes)
-- -debug, enables the debug verbose
+- --enable-debug=yes, enables the debug verbose
 
 ###Test 
 
