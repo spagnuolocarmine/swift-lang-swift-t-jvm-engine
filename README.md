@@ -1,14 +1,14 @@
-#C-JVM-Scripting: evaluate JVM scripting languages in C applications. 
+# C-JVM-Scripting: evaluate JVM scripting languages in C applications. 
 
 Version Alpha 1.0 
 
-###Software Requirements
+### Software Requirements
 
 - Autotool
 - Maven
 - Java Virtual Machine
 
-###Tested Envirnment
+###  Tested Envirnment
 
 - Unbuntu 14.04
 - java version "1.8.0_45" oracle
@@ -17,7 +17,7 @@ Version Alpha 1.0
 - automake (GNU automake) 1.14.1
 - Apache Maven 3.0.5
 
-###Installation
+### Installation
 ```
 ./bootstrap
 ./configure
@@ -26,26 +26,26 @@ export SWIFT_JVM_USER_LIB=swift-jvm/swift-jvm-build/target/swift-jvm-build-0.0.1
 export LD_LIBRARY_PATH=/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server (change this with JVM home)
 ./src/test
 ```
-###Configure Options
+### Configure Options
 
 - --with-jvm-home, jvm home directory (default:/usr/lib/jvm/java-8-oracle)
 - --with-swift-jvm-engine-lib, swift jvm engine lib (default: classes)
 - --enable-debug=yes, enables the debug verbose
 
-###Test 
+### Test 
 
 ```
 ./src/test
 ```
 
-#####Output
+##### Output
 ```
 Test all script engine ..
 
 Clojure: ok
 ```
 
-###TODO
+### TODO
 
 - Test USER LIB in scripting
 - Add other test in Java
