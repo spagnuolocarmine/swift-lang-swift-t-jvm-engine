@@ -6,4 +6,5 @@ public class SwiftJVMScriptingEngineNames {
 	static final String SCALA = "scala";
 	static final String GROOVY = "groovy";
 	static final String JAVASCRIPT = "javascript";
+	static final String JAVASHELL = "jshell";
 }

@@ -30,7 +30,7 @@ extends TestCase
 
 	/**
 	 */
-	public  void testClojure()
+	public synchronized void testClojure()
 	{
 			String script_hello_clojure=""
 					+"	(ns clojure.examples.hello                          \n"
@@ -41,7 +41,7 @@ extends TestCase
 					+"                                                      \n"
 					+"			(hello-world \"Red\")                       \n"
 					+"";
-			System.out.println(SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.CLOJURE,script_hello_clojure));
+			System.out.println("Clojure->"+SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.CLOJURE,script_hello_clojure));
 
 	}
 	/**
@@ -61,14 +61,14 @@ extends TestCase
 				+"} \n"
 				+ "\n println hash(UUID.randomUUID().toString())"
 				+" ";
-		System.out.println(SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.GROOVY,script_fac_groovy));
+		System.out.println("Groovy->"+SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.GROOVY,script_fac_groovy));
 
 
 
 
 	}
 	//TODO ADD RETURN VALUE STRING
-	public synchronized void testScala()
+	/*public synchronized void testScala()
 	{
 
 
@@ -80,9 +80,9 @@ extends TestCase
 		System.out.println(SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.SCALA,script_scala));
 
 
-	}
+	}*/
 	//TODO ADD RETURN VALUE STRING
-	public synchronized void testJavaScript()
+	/*public synchronized void testJavaScript()
 	{
 
 
@@ -92,7 +92,17 @@ extends TestCase
 				+"  return eval(\"x + y\");  // Direct call, uses local scope, result is 6                                         \n"
 				+"}    test();  ";
 
-		System.out.println(SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.JAVASCRIPT,script_js));
+		System.out.println("JavaScript->"+SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.JAVASCRIPT,script_js));
+
+
+	}*/
+	public synchronized void testJavaShell()
+	{
+
+
+		String script_jshell = "int c = 4+5*6;";
+
+		System.out.println("JavaShell->"+SwiftJVMScriptingEngine.eval(SwiftJVMScriptingEngineNames.JAVASHELL, script_jshell));
 
 
 	}

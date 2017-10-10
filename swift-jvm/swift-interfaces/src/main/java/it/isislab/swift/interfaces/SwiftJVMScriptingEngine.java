@@ -1,6 +1,7 @@
 package it.isislab.swift.interfaces;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -8,7 +9,9 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import it.isislab.swift.scala.ScalaScriptEngine;
+import it.isislab.swiftlang.java_jshell.JShellScriptEngine;
 import it.isislab.swiftlang.swfit_clojure.ClojureScriptEngine;
+import jdk.jshell.SnippetEvent;
 
 public class SwiftJVMScriptingEngine {
 
@@ -34,6 +37,9 @@ public class SwiftJVMScriptingEngine {
 				break;
 			case SwiftJVMScriptingEngineNames.JAVASCRIPT:
 				engine = new ScriptEngineManager().getEngineByName(SwiftJVMScriptingEngineNames.JAVASCRIPT);
+				break;
+			case SwiftJVMScriptingEngineNames.JAVASHELL:
+				engine = new ScriptEngineManager().getEngineByName(SwiftJVMScriptingEngineNames.JAVASHELL);
 				break;
 			default:
 				break;
@@ -65,7 +71,17 @@ public class SwiftJVMScriptingEngine {
 			case SwiftJVMScriptingEngineNames.SCALA:
 				output=engine.eval(code);
 				return output!=null?output.toString():"";
-
+			case SwiftJVMScriptingEngineNames.JAVASHELL:
+				engine=new JShellScriptEngine();
+				output=engine.eval(code);
+				
+				List<SnippetEvent> outputs=(List<SnippetEvent>)output;
+				String tor="";
+				for(SnippetEvent s: outputs)
+				{
+					if(s.value() != null) tor+=s.value()+"";
+				}
+				return tor;
 			default:
 				return null;
 			}
@@ -112,6 +128,17 @@ public class SwiftJVMScriptingEngine {
 				output = writer.toString();
 
 				return output!=null?(String)output:"";
+			case SwiftJVMScriptingEngineNames.JAVASHELL:
+				engine=new JShellScriptEngine();
+				output=engine.eval(code);
+			
+				List<SnippetEvent> outputs=(List<SnippetEvent>)output;
+				String tor="";
+				for(SnippetEvent s: outputs)
+				{
+					if(s.value() != null) tor+=s.value()+"";
+				}
+				return tor;
 			default:
 				return null;
 			}

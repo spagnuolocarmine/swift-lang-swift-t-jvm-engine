@@ -7,8 +7,10 @@
     <artifactId>swift-jvm</artifactId>
     <version>0.0.1</version>
   </parent>
-  <artifactId>swift-interfaces</artifactId>
-  <name>swift-interfaces</name>
+  <groupId>it.isislab.swiftlang</groupId>
+  <artifactId>swift-java-jshell</artifactId>
+  <version>0.0.1</version>
+  <name>swift-java-jshell</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,26 +21,6 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>it.isislab.swiftlang</groupId>
-      <artifactId>swift-clojure</artifactId>
-      <version>0.0.1</version>
-    </dependency>
-     <dependency>
-      <groupId>it.isislab.swiftlang</groupId>
-      <artifactId>swift-scala</artifactId>
-      <version>0.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>it.isislab.swiftlang</groupId>
-      <artifactId>swift-groovy</artifactId>
-      <version>0.0.1</version>
-    </dependency>
-     <dependency>
-      <groupId>it.isislab.swiftlang</groupId>
-      <artifactId>swift-java-jshell</artifactId>
-      <version>0.0.1</version>
     </dependency>
   </dependencies>
 </project>
