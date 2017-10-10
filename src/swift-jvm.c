@@ -20,7 +20,7 @@
 #endif /* DEBUG */
 
 JNIEnv * env;
-JavaVM * jvm; 
+JavaVM * jvm;
 
 static inline void pdebug(const char* fmt, const char* s)
 {
@@ -57,7 +57,7 @@ char * createClassPathString(char *jars_dir)
       if(strlen(pDirent->d_name) > 4 && !strcmp(pDirent->d_name + strlen(pDirent->d_name) - 4, ".jar"))
       {
         sprintf(nbuf,"%s/%s",jars_dir,pDirent->d_name);
-        
+
 	if(realpath(nbuf, buf)==NULL) PDEBUG("Error in realpath resolving.");
          if(first)
          {
@@ -81,7 +81,7 @@ char * createClassPathString(char *jars_dir)
 }
 void call_java_static_method(char *java_class_name,char *method_name,char *arg)
 {
-  jmethodID smfnMethod = NULL; 
+  jmethodID smfnMethod = NULL;
   jclass clsJava=NULL;
   jstring StringArg=NULL;
   clsJava = (*env)->FindClass(env,java_class_name);
@@ -93,12 +93,12 @@ void call_java_static_method(char *java_class_name,char *method_name,char *arg)
   smfnMethod = (*env)->GetStaticMethodID(env, clsJava, method_name, "(Ljava/lang/String;)V\0");
 
   StringArg = (*env)->NewStringUTF(env, arg);
-   
+
    if(smfnMethod != NULL)
    {
       PDEBUG("Calling the Static Function method -->");PDEBUGN(method_name);
       ((*env)->CallStaticCharMethod(env, clsJava, smfnMethod, StringArg));
-    
+
        if ((*env)->ExceptionOccurred(env)) {
           (*env)->ExceptionDescribe(env);
       }
@@ -147,13 +147,13 @@ char * call_java_static_char_method(char *java_class_name,char *method_name,char
       }
 
    }else PDEBUGN("No method found in class");
-   
+
    strtor= (char*)((*env)->GetStringUTFChars(env, tor, NULL));
    // Caller must free this string:
    char *toStringReturn= (char*)malloc(sizeof(char)*strlen(strtor));
    sprintf(toStringReturn,"%s",strtor);
    printf("groovy result: %s\n", toStringReturn);
-   (*env)->ReleaseStringUTFChars(env,tor, strtor); 
+   (*env)->ReleaseStringUTFChars(env,tor, strtor);
    return toStringReturn;
 }
 
@@ -182,9 +182,9 @@ static int init_jvm() {
   // printf("GCPU: %s\n", generated_class_path_user);
   if (generated_class_path_user == NULL) return SWIFT_JVM_ERROR;
   char cp[strlen(generated_class_path)+strlen(generated_class_path_user)+128];
-  
-  sprintf(cp,"-Djava.class.path=%s:%s",generated_class_path,generated_class_path_user);  
-  
+
+  sprintf(cp,"-Djava.class.path=%s:%s",generated_class_path,generated_class_path_user);
+
   options.optionString = cp;//java_class_path;
   PDEBUGN("Loaded classpath");
   PDEBUGN(options.optionString);
@@ -196,7 +196,7 @@ static int init_jvm() {
 
   int ret = JNI_CreateJavaVM(&jvm, (void**)&env, &vm_args);
 
-  if(ret < 0 || !env) PDEBUGN("Unable to Launch JVM");   	
+  if(ret < 0 || !env) PDEBUGN("Unable to Launch JVM");
 
   PDEBUGN("JVM started.");
   return ret;
@@ -230,7 +230,7 @@ char * groovy(char *code)
 char * clojure(char *code)
 {
   if(jvm == NULL) init_jvm();
-  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","clojure");
+
   char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","clojure",code);
   return tor;
 }
@@ -238,7 +238,7 @@ char * clojure(char *code)
 char * scala(char *code)
 {
   if(jvm == NULL) init_jvm();
-  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","scala");
+
   char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","scala",code);
   return tor;
 }
@@ -246,13 +246,22 @@ char * scala(char *code)
 char * javascript(char *code)
 {
   if(jvm == NULL) init_jvm();
-  //call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","javascript");
+
   char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","javascript",code);
+  return tor;
+}
+
+/* Evaluate JavaShell Code and returns a char array of the stdio*/
+char * javashell(char *code)
+{
+  if(jvm == NULL) init_jvm();
+
+  char * tor=call_java_static_char_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","eval","javashell",code);
   return tor;
 }
 /*int main(void)
 {
-  
+
  char path_java_code[]="classes";
   init_jvm(path_java_code);
   call_java_static_method("it/isislab/swift/interfaces/SwiftJVMScriptingEngine","setEngine","clojure");
